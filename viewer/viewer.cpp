@@ -73,7 +73,7 @@ int main (int argc, char** argv)
     ntk_debug_level = opt::debug_level();
     cv::setBreakOnError(true);
 
-    QApplication::setGraphicsSystem("raster");
+//    QApplication::setGraphicsSystem("raster");
     QApplication app (argc, argv);
 
     RGBDGrabberFactory& grabber_factory = RGBDGrabberFactory::instance();

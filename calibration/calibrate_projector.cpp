@@ -241,7 +241,7 @@ void computeHomographies_rgb(const Context& context, std::vector<cv::Mat1d*>& ho
 		if (found) {
 			cv::Mat current_mat(current_view_corners);
 			homographies[i_image] = new cv::Mat1d();
- 			*(homographies[i_image]) = cv::findHomography(current_mat, cv::Mat(pattern_points), CV_RANSAC, 0.01);
+ 			*(homographies[i_image]) = cv::findHomography(current_mat, cv::Mat(pattern_points), cv::RANSAC, 0.01);
             // 			if (i_image == 0) {
             // 				cv::Mat current_pattern;
             // 				cv::perspectiveTransform(current_mat, current_pattern, *(homographies[i_image]));
@@ -352,8 +352,8 @@ void calibrate_projector(Context& context, const std::vector<cv::Mat1d*>& homogr
 
 	find_projector_image(context, proj_pattern.size(), undistorted_good_proj);
 	
-	//  	int flags = CV_CALIB_FIX_K1 + CV_CALIB_FIX_K2 + CV_CALIB_FIX_K3;
-	int flags = CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_FIX_K1 + CV_CALIB_FIX_K2 + CV_CALIB_FIX_K3;
+	//  	int flags = cv::CALIB_FIX_K1 + cv::CALIB_FIX_K2 + cv::CALIB_FIX_K3;
+	int flags = cv::CALIB_ZERO_TANGENT_DIST + cv::CALIB_FIX_K1 + cv::CALIB_FIX_K2 + cv::CALIB_FIX_K3;
 	// 	int flags = 0;
 
 	std::vector<cv::Mat> rvecs, tvecs;
@@ -377,8 +377,8 @@ void calibrate_projector(Context& context, const std::vector<cv::Mat1d*>& homogr
 					context.rgb_intrinsics, zero_dist,
 					context.proj_size,
 					context.R, context.T, E, F,
-					cv::TermCriteria(cv::TermCriteria::COUNT+cv::TermCriteria::EPS, 50, 1e-6),
-					cv::CALIB_FIX_INTRINSIC);
+					cv::CALIB_FIX_INTRINSIC,
+					cv::TermCriteria(cv::TermCriteria::COUNT+cv::TermCriteria::EPS, 50, 1e-6));
 
 	double error = computeCalibrationError(F, undistorted_good_proj, undistorted_good_rgb);
 	std::cout << "Average pixel reprojection error: " << error << std::endl;
@@ -420,7 +420,7 @@ void calibrate_projector(Context& context, const std::vector<cv::Mat1d*>& homogr
 
 void writeNestkMatrix(const Context& context)
 {
-    cv::FileStorage output_file (context.opt_output_file(), CV_STORAGE_WRITE);
+    cv::FileStorage output_file (context.opt_output_file(), cv::FileStorage::WRITE);
     writeMatrix(output_file, "proj_intrinsics", context.proj_intrinsics);
     writeMatrix(output_file, "proj_distortion", context.proj_distortion);
     writeMatrix(output_file, "R", context.R);
@@ -447,7 +447,7 @@ void writeROSMatrix(const Context& context)
 	cv::Mat1f proj = calib.pose->cvProjectionMatrix();
 	cv::Mat1f identity(3,3); setIdentity(identity);
 	
-	cv::FileStorage ros_depth_file ("calibration_proj.yaml", CV_STORAGE_WRITE);
+	cv::FileStorage ros_depth_file ("calibration_proj.yaml", cv::FileStorage::WRITE);
 	writeMatrix(ros_depth_file, "camera_matrix", context.proj_intrinsics);
 	writeMatrix(ros_depth_file, "distortion_coefficients", context.proj_distortion);
 	writeMatrix(ros_depth_file, "rectification_matrix", identity);
@@ -507,7 +507,7 @@ int main(int argc, char** argv)
 	cv::namedWindow("corners");
 
 	context.images_dir = QDir(context.opt_image_directory());
-	ntk_ensure(context.images_dir.exists(), (context.images_dir.absolutePath() + " is not a directory.").toAscii());
+	ntk_ensure(context.images_dir.exists(), (context.images_dir.absolutePath() + " is not a directory.").toStdString().c_str());
     context.images_list = context.images_dir.entryList(QStringList("view????*"), QDir::Dirs, QDir::Name);
 	
 	RGBDCalibration calib;

@@ -1,4 +1,4 @@
-QT4_WRAP_CPP(moc_sources
+QT5_WRAP_CPP(moc_sources
   GuiController.h
   ModelAcquisitionController.h
   FiltersWindow.h
@@ -6,7 +6,7 @@ QT4_WRAP_CPP(moc_sources
   ModelAcquisitionWindow.h
 )
 
-QT4_WRAP_UI(uic_sources
+QT5_WRAP_UI(uic_sources
   RawImagesWindow.ui
   FiltersWindow.ui
   ModelAcquisitionWindow.ui

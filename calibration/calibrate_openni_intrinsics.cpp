@@ -121,7 +121,7 @@ void calibrateFromInfrared(std::vector<ntk::RGBDImage>& images,
                                     global::opt_square_size(), global::pattern_type,
                                     global::opt_ignore_distortions(),
                                     global::opt_fix_center(),
-                                    CV_CALIB_USE_INTRINSIC_GUESS|CV_CALIB_FIX_ASPECT_RATIO/*|CV_CALIB_FIX_FOCAL_LENGTH*/);
+                                    cv::CALIB_USE_INTRINSIC_GUESS|cv::CALIB_FIX_ASPECT_RATIO/*|cv::CALIB_FIX_FOCAL_LENGTH*/);
     global::calibration.computeDepthIntrinsicsFromInfrared();
     global::calibration.updatePoses();
 }
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
     global::initial_focal_length = global::calibration.rgb_pose->focalX();
 
     global::images_dir = QDir(global::opt_image_directory());
-    ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toAscii());
+    ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toStdString().c_str());
 
     global::images_list = global::images_dir.entryList(QStringList("view????*"), QDir::Dirs, QDir::Name);
 

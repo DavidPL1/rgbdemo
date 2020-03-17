@@ -32,7 +32,7 @@ using namespace cv;
 
 void PeopleTrackerParameters::loadFromYamlFile(const std::string &filename)
 {
-    FileStorage params_file (filename, CV_STORAGE_READ);
+    FileStorage params_file (filename, cv::FileStorage::READ);
     ntk_throw_exception_if(!params_file.isOpened(), "Could not open " + filename);
 
     for (int i = 0; i < 4; ++i)
@@ -81,13 +81,13 @@ PeopleTracker::PeopleTracker(const PeopleTrackerParameters& parameters)
 
 void PeopleTracker::saveBackgroundInfoToFile(const std::string& filename) const
 {
-    FileStorage tracker_file (filename, CV_STORAGE_WRITE);
+    FileStorage tracker_file (filename, cv::FileStorage::WRITE);
 
     write_to_yaml(tracker_file, "ground_plane", m_ground_plane);
 
-    cvStartWriteStruct(*tracker_file, "virtual_top_view", CV_NODE_MAP);
+    tracker_file.startWriteStruct("virtual_top_view", cv::FileNode::MAP, String("virtual_top_view"));
     m_virtual_top_view.saveToYaml(tracker_file);
-    cvEndWriteStruct(*tracker_file);
+    tracker_file.endWriteStruct();
 
     write_to_yaml(tracker_file, "top_image_width", m_top_image_width);
     write_to_yaml(tracker_file, "top_image_height", m_top_image_height);
@@ -104,7 +104,7 @@ void PeopleTracker::saveBackgroundInfoToFile(const std::string& filename) const
 
 void PeopleTracker::loadBackgroundInfoFromFile(const std::string& filename)
 {
-    FileStorage tracker_file (filename, CV_STORAGE_READ);
+    FileStorage tracker_file (filename, cv::FileStorage::READ);
 
     read_from_yaml(tracker_file["ground_plane"] , m_ground_plane);
 
@@ -149,7 +149,7 @@ struct TrackerGroundMouseData
 
 static void on_tracker_ground_mouse(int event, int x, int y, int flags, void *void_data)
 {
-    if (event != CV_EVENT_RBUTTONUP)
+    if (event != cv::EVENT_RBUTTONUP)
         return;
 
     TrackerGroundMouseData* data = (TrackerGroundMouseData*)void_data;
@@ -177,7 +177,7 @@ void PeopleTracker::estimateGroundPlaneFromUserInput(const ntk::RGBDImage& image
     TrackerGroundMouseData ground_mouse_data;
     ground_mouse_data.window_name = "Select 3 points to estimate the ground plane (right click)";
     namedWindow(ground_mouse_data.window_name,
-                CV_WINDOW_NORMAL|CV_WINDOW_KEEPRATIO|CV_GUI_EXPANDED);
+                cv::WINDOW_NORMAL|cv::WINDOW_KEEPRATIO|cv::WINDOW_GUI_EXPANDED);
     ground_mouse_data.image = toMat3b(normalize_toMat1b(image.depth()));
     imshow(ground_mouse_data.window_name, ground_mouse_data.image);
     setMouseCallback(ground_mouse_data.window_name, on_tracker_ground_mouse, &ground_mouse_data);
@@ -208,7 +208,7 @@ void PeopleTracker :: estimateWorkingZoneFromUserInput(const ntk::RGBDImage& ima
     TrackerGroundMouseData ground_mouse_data;
     ground_mouse_data.window_name = "Choose 4 points to define the working zone (right click).";
     namedWindow(ground_mouse_data.window_name,
-                CV_WINDOW_NORMAL|CV_WINDOW_KEEPRATIO|CV_GUI_EXPANDED);
+                cv::WINDOW_NORMAL|cv::WINDOW_KEEPRATIO|cv::WINDOW_GUI_EXPANDED);
     ground_mouse_data.image = toMat3b(normalize_toMat1b(m_current_top_view));
     imshow(ground_mouse_data.window_name, ground_mouse_data.image);
     setMouseCallback(ground_mouse_data.window_name, on_tracker_ground_mouse, &ground_mouse_data);
@@ -241,7 +241,7 @@ void PeopleTracker::processNewImage(const ntk::RGBDImage& image)
 
 static void on_mouse_show_value(int event, int x, int y, int flags, void *void_data)
 {
-    if (event != CV_EVENT_MOUSEMOVE)
+    if (event != cv::EVENT_MOUSEMOVE)
         return;
 
     cv::Mat* img = (Mat*)void_data;

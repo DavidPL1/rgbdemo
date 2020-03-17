@@ -143,7 +143,7 @@ void calibrate_kinect_depth(std::vector< std::vector<Point2f> >& stereo_corners,
 
   int flags = 0;
   if (global::opt_ignore_distortions())
-    flags = CV_CALIB_ZERO_TANGENT_DIST;
+    flags = cv::CALIB_ZERO_TANGENT_DIST;
 
   double error = calibrateCamera(pattern_points, good_corners, global::image_size,
                                  global::depth_intrinsics, global::depth_distortion,
@@ -282,7 +282,7 @@ void calibrate_kinect_rgb(std::vector< std::vector<Point2f> >& stereo_corners)
 
   int flags = 0;
   if (global::opt_ignore_distortions())
-    flags = CV_CALIB_ZERO_TANGENT_DIST;
+    flags = cv::CALIB_ZERO_TANGENT_DIST;
 
   std::vector<Mat> rvecs, tvecs;
   double error = calibrateCamera(pattern_points, good_corners, global::image_size,
@@ -411,7 +411,7 @@ void estimate_depth_function(const std::vector<DepthCalibrationPoint>& points)
 void writeNestkMatrix()
 {
   FileStorage output_file (global::opt_output_file(),
-                           CV_STORAGE_WRITE);
+                           cv::FileStorage::WRITE);
   writeMatrix(output_file, "rgb_intrinsics", global::rgb_intrinsics);
   writeMatrix(output_file, "rgb_distortion", global::rgb_distortion);
   writeMatrix(output_file, "depth_intrinsics", global::depth_intrinsics);
@@ -444,7 +444,7 @@ void writeROSMatrix()
   cv::Mat1f identity(3,3); setIdentity(identity);
 
   FileStorage ros_depth_file ("calibration_depth.yaml",
-                              CV_STORAGE_WRITE);
+                              cv::FileStorage::WRITE);
   writeMatrix(ros_depth_file, "camera_matrix", global::depth_intrinsics);
   writeMatrix(ros_depth_file, "distortion_coefficients", global::depth_distortion);
   writeMatrix(ros_depth_file, "rectification_matrix", identity);
@@ -452,7 +452,7 @@ void writeROSMatrix()
   ros_depth_file.release();
 
   FileStorage ros_rgb_file ("calibration_rgb.yaml",
-                            CV_STORAGE_WRITE);
+                            cv::FileStorage::WRITE);
   writeMatrix(ros_rgb_file, "camera_matrix", global::rgb_intrinsics);
   writeMatrix(ros_rgb_file, "distortion_coefficients", global::rgb_distortion);
   writeMatrix(ros_rgb_file, "rectification_matrix", identity);
@@ -469,7 +469,7 @@ int main(int argc, char** argv)
   namedWindow("corners");
 
   global::images_dir = QDir(global::opt_image_directory());
-  ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toAscii());
+  ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toStdString().c_str());
   global::images_list = global::images_dir.entryList(QStringList("view????"), QDir::Dirs, QDir::Name);
 
 

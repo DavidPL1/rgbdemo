@@ -1,11 +1,11 @@
-QT4_WRAP_CPP(moc_sources
+QT5_WRAP_CPP(moc_sources
   GuiController.h
   FiltersWindow.h
   RawImagesWindow.h
   PeopleTrackerWindow.h
 )
 
-QT4_WRAP_UI(uic_sources
+QT5_WRAP_UI(uic_sources
   RawImagesWindow.ui
   FiltersWindow.ui
   PeopleTrackerWindow.ui

@@ -1,9 +1,9 @@
-QT4_WRAP_CPP(moc_sources
+QT5_WRAP_CPP(moc_sources
   GuiController.h
   RawImagesWindow.h
 )
 
-QT4_WRAP_UI(uic_sources
+QT5_WRAP_UI(uic_sources
   RawImagesWindow.ui
 )
 

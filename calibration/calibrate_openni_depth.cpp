@@ -120,7 +120,7 @@ void calibrate_kinect_depth(std::vector< DepthCalibrationPoint >& depth_values)
             ntk_dbg_print(kinect_raw, 1);
             if (kinect_raw < 1e-5) continue;
             float err = kinect_raw-p.z;
-            cv::putText(debug_img, format("%d", (int)(err*1000)), Point(p.x, p.y), CV_FONT_NORMAL, 0.4, Scalar(255,0,0));
+            cv::putText(debug_img, format("%d", (int)(err*1000)), Point(p.x, p.y), cv::FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255,0,0));
             ntk_dbg_print(pattern_points[0][pattern_i], 1);
             ntk_dbg_print(p, 1);
             ntk_dbg_print(kinect_raw, 1);
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
     global::calibration.loadFromFile(global::opt_input_file());
 
     global::images_dir = QDir(global::opt_image_directory());
-    ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toAscii());
+    ntk_ensure(global::images_dir.exists(), (global::images_dir.absolutePath() + " is not a directory.").toStdString().c_str());
     global::images_list = global::images_dir.entryList(QStringList("view????*"), QDir::Dirs, QDir::Name);
 
     std::vector<DepthCalibrationPoint> depth_values;
