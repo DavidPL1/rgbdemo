@@ -14,7 +14,8 @@ QT5_WRAP_UI(uic_sources
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 SET(scan_markers_sources ${moc_sources} ${uic_sources}
-               scan_markers.cpp
+               scan_markers_openni2.cpp
+               # scan_markers.cpp
                RawImagesWindow.h RawImagesWindow.cpp
                GuiController.cpp GuiController.h
                ModelAcquisitionController.cpp ModelAcquisitionController.h
